@@ -4,6 +4,7 @@ import org.chocosolver.samples.AbstractProblem;
 import org.chocosolver.solver.constraints.IntConstraintFactory;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.VariableFactory;
+import org.chocosolver.util.ESat;
 import org.chocosolver.solver.Solver;
 
 public class Nqueens extends AbstractProblem {
@@ -15,9 +16,15 @@ public class Nqueens extends AbstractProblem {
 	IntVar[] vars;
 
 	public static void main(String[] args) {
+		Nqueens sol = new Nqueens();
+		sol.generate();
 		// Cette méthode héritée de AbstractProblem appelle les autres méthodes
 		// dans l’ordre approprié et affiche le résultat.
-		new Nqueens().execute(args);
+		sol.execute();
+	}
+
+	private void generate() {
+
 	}
 
 	/**
@@ -73,5 +80,16 @@ public class Nqueens extends AbstractProblem {
 
 	@Override
 	public void prettyOut() {
+		if (solver.isFeasible().equals(ESat.TRUE)) {
+			for (int i = 0; i < vars.length; i++) {
+				for (int j = 0; j < vars.length; j++)
+					System.out.print(
+							solver.getSolutionRecorder().getLastSolution().getIntVal(vars[j]) - 1 == i ? "|Q" : "| ");
+				System.out.println("|");
+			}
+			System.out.println();
+		} else {
+			System.out.println("Pas de solutions !");
+		}
 	}
 }
