@@ -10,10 +10,13 @@ import org.chocosolver.solver.Solver;
 
 public class Nqueens extends AbstractProblem {
 	// Nombre de reines à trouver -> Taille de la grille.
-	int n = 6;
+	int n = 10;
 	// Nombre de reines placées par le générateur.
 	int k = 2;
+	// Stockage de sortie du générateur
 	int[] init;
+	// Tableau pour les diagonales
+	int[][] diag = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
 	// Les variables du problème sont des instances de la classe IntVar.
 	IntVar[] vars;
 
@@ -31,13 +34,15 @@ public class Nqueens extends AbstractProblem {
 			init[i] = 0;
 		Random rnd = new Random();
 		boolean chk, isValid;
-		int x, y, cpt, nb = 0;
+		int x, y, dx, dy, cpt, nb = 0;
 		while (nb < k) {
 			isValid = false;
 			x = rnd.nextInt(n);
+			//horizontal
 			if (init[x] == 0) {
 				isValid = true;
 				y = rnd.nextInt(n) + 1;
+				//vertical
 				for (int i = 0; i < n; i++) {
 					if (init[i] == y) {
 						isValid = false;
@@ -46,34 +51,18 @@ public class Nqueens extends AbstractProblem {
 				}
 				chk = true;
 				cpt = 1;
+				//diag
 				while (chk && isValid) {
 					chk = false;
-					if (x - cpt >= 0 && y - cpt > 0) {
-						chk = true;
-						if (init[x - cpt] == y - cpt) {
-							isValid = false;
-							break;
-						}
-					}
-					if (x - cpt >= 0 && y + cpt < n + 1) {
-						chk = true;
-						if (init[x - cpt] == y + cpt) {
-							isValid = false;
-							break;
-						}
-					}
-					if (x + cpt < n && y + cpt < n + 1) {
-						chk = true;
-						if (init[x + cpt] == y + cpt) {
-							isValid = false;
-							break;
-						}
-					}
-					if (x + cpt < n && y - cpt > 0) {
-						chk = true;
-						if (init[x + cpt] == y - cpt) {
-							isValid = false;
-							break;
+					for (int i = 0; i < 4; i++) {
+						dx = diag[i][0] * cpt;
+						dy = diag[i][1] * cpt;
+						if (x + dx >= 0 && x + dx < n && y + dy > 0 && y + dy < n + 1) {
+							chk = true;
+							if (init[x + dx] == y + dy) {
+								isValid = false;
+								break;
+							}
 						}
 					}
 					cpt++;
