@@ -1,5 +1,6 @@
 package intro_choco;
 
+import java.util.Random;
 import org.chocosolver.samples.AbstractProblem;
 import org.chocosolver.solver.constraints.IntConstraintFactory;
 import org.chocosolver.solver.variables.IntVar;
@@ -9,9 +10,10 @@ import org.chocosolver.solver.Solver;
 
 public class Nqueens extends AbstractProblem {
 	// Nombre de reines à trouver -> Taille de la grille.
-	int n = 10;
+	int n = 6;
 	// Nombre de reines placées par le générateur.
-	int k = 9;
+	int k = 2;
+	int[] init;
 	// Les variables du problème sont des instances de la classe IntVar.
 	IntVar[] vars;
 
@@ -24,7 +26,73 @@ public class Nqueens extends AbstractProblem {
 	}
 
 	private void generate() {
-
+		init = new int[n];
+		for (int i = 0; i < n; i++)
+			init[i] = 0;
+		Random rnd = new Random();
+		boolean chk, isValid;
+		int x, y, cpt, nb = 0;
+		while (nb < k) {
+			isValid = false;
+			x = rnd.nextInt(n);
+			if (init[x] == 0) {
+				isValid = true;
+				y = rnd.nextInt(n) + 1;
+				for (int i = 0; i < n; i++) {
+					if (init[i] == y) {
+						isValid = false;
+						break;
+					}
+				}
+				chk = true;
+				cpt = 1;
+				while (chk && isValid) {
+					chk = false;
+					if (x - cpt >= 0 && y - cpt > 0) {
+						chk = true;
+						if (init[x - cpt] == y - cpt) {
+							isValid = false;
+							break;
+						}
+					}
+					if (x - cpt >= 0 && y + cpt < n + 1) {
+						chk = true;
+						if (init[x - cpt] == y + cpt) {
+							isValid = false;
+							break;
+						}
+					}
+					if (x + cpt < n && y + cpt < n + 1) {
+						chk = true;
+						if (init[x + cpt] == y + cpt) {
+							isValid = false;
+							break;
+						}
+					}
+					if (x + cpt < n && y - cpt > 0) {
+						chk = true;
+						if (init[x + cpt] == y - cpt) {
+							isValid = false;
+							break;
+						}
+					}
+					cpt++;
+				}
+				if (isValid) {
+					init[x] = y;
+					System.out.println("===== OK ===== X:" + x + " Y:" + y);
+					nb++;
+				} else {
+					System.out.println("----- KO ----- X:" + x + " Y:" + y);
+				}
+			}
+		}
+		for (int i = 0; i < init.length; i++) {
+			for (int j = 0; j < init.length; j++)
+				System.out.print(init[j] - 1 == i ? "|Q" : "| ");
+			System.out.println("|");
+		}
+		System.out.println();
 	}
 
 	/**
@@ -61,7 +129,10 @@ public class Nqueens extends AbstractProblem {
 		vars = new IntVar[n];
 		// Création des variables ayant toutes pour domaine 1..n.
 		for (int i = 0; i < vars.length; i++) {
-			vars[i] = VariableFactory.enumerated("Q_" + i, 1, n, solver);
+			if (init[i] == 0)
+				vars[i] = VariableFactory.enumerated("Q_" + i, 1, n, solver);
+			else
+				vars[i] = VariableFactory.fixed("Q_" + i, init[i], solver);
 		}
 		// Ajout d’une contrainte imposant que les variables aient toutes des
 		// valeurs différentes.
@@ -87,7 +158,6 @@ public class Nqueens extends AbstractProblem {
 							solver.getSolutionRecorder().getLastSolution().getIntVal(vars[j]) - 1 == i ? "|Q" : "| ");
 				System.out.println("|");
 			}
-			System.out.println();
 		} else {
 			System.out.println("Pas de solutions !");
 		}
