@@ -17,7 +17,7 @@ public class Nqueens extends AbstractProblem {
 	static int DEBUG = 0;
 	// Nombre de reines à trouver -> Taille de la grille.
 	static int n;
-	static int nMax = 25;
+	static int nMax = 100;
 	// Nombre de reines placées par le générateur.
 	static int k;
 	// Nombre de test
@@ -31,13 +31,15 @@ public class Nqueens extends AbstractProblem {
 	IntVar[] vars;
 	// Fichier sauvegarde
 	static FileWriter writer;
+	// Time
+	static long time = System.nanoTime();
 
 	public static void main(String[] args) {
 		if (DEBUG >= 0)
 			try {
 				writer = new FileWriter(System.getProperty("user.dir") + "/out.csv");
 				writer.flush();
-				writer.append("n, k, kPlace, ok\n");
+				writer.append("n, k, kPlace, time, ok\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -45,6 +47,8 @@ public class Nqueens extends AbstractProblem {
 		for (n = 4; n <= nMax; n++) {
 			for (k = 1; k <= n; k++) {
 				for (t = 0; t < tMax; t++) {
+					if (DEBUG >= 0)
+						time = System.nanoTime();
 					if (DEBUG > 0)
 						System.out.println("<== n: " + n + " k: " + k + "==>");
 					Nqueens sol = new Nqueens();
@@ -72,7 +76,6 @@ public class Nqueens extends AbstractProblem {
 		ArrayList<Integer> pY = new ArrayList<Integer>();
 		init = new int[n];
 		for (int i = 0; i < n; i++) {
-			init[i] = 0;
 			// on créé une liste des X/Y
 			pX.add(i);
 			pY.add(i + 1);
@@ -143,8 +146,9 @@ public class Nqueens extends AbstractProblem {
 				if (init[i] != 0)
 					kPlace++;
 			}
-			// writer.append("n, k, kPlace, ok\n");
-			writer.append(n + "," + k + "," + kPlace + "," + ok + "\n");
+			// writer.append("n, k, kPlace, time, ok\n");
+			writer.append(
+					n + "," + k + "," + kPlace + "," + (System.nanoTime() - time) + "," + (ok ? "1" : "0") + "\n");
 		}
 	}
 
