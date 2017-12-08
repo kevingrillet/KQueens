@@ -17,14 +17,12 @@ public class Nqueens extends AbstractProblem {
 	static int DEBUG = 0;
 	// Nombre de reines à trouver -> Taille de la grille.
 	static int n;
-	static int nMax = 100;
+	static int nMax = 25;
 	// Nombre de reines placées par le générateur.
 	static int k;
 	// Nombre de test
 	static int t;
 	static int tMax = 100;
-	// Nombre maximum de tentatives dans le solveur
-	int nbTentative = 10000;
 	// Stockage de sortie du générateur
 	int[] init;
 	// Tableau pour les diagonales
@@ -119,7 +117,7 @@ public class Nqueens extends AbstractProblem {
 					System.out.println("----- KO ----- X:" + x + " Y:" + y);
 				// Si ca marche pas, on s'arrête, des fois ca marche juste pas
 				// TODO: Retour en arrière & regénération jusqu'à solution...
-				if (iTry > nbTentative) {
+				if (iTry > n * 100) {
 					if (DEBUG > 0)
 						System.out.println("<-- Pas de solution n: " + n + " k: " + k + " nb: " + nb + " -->");
 					return false;
