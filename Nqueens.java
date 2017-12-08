@@ -14,7 +14,7 @@ import org.chocosolver.solver.Solver;
 public class Nqueens extends AbstractProblem {
 	// -1 -> Silencieux, 0 -> Sortie fichier,
 	// 1 -> Affichage des grilles, 2 -> Affichage de tout
-	static int DEBUG = 0;
+	static final int DEBUG = 0;
 	// Nombre de reines à trouver -> Taille de la grille.
 	static int n;
 	static int nMax = 100;
@@ -25,6 +25,9 @@ public class Nqueens extends AbstractProblem {
 	static int tMax = 100;
 	// Stockage de sortie du générateur
 	int[] init;
+	// Tableau de prégénération des coord X/Y
+	static ArrayList<Integer> gpX = new ArrayList<Integer>();
+	static ArrayList<Integer> gpY = new ArrayList<Integer>();
 	// Tableau pour les diagonales
 	int[][] diag = { { -1, -1 }, { -1, 1 }, { 1, -1 }, { 1, 1 } };
 	// Les variables du problème sont des instances de la classe IntVar.
@@ -34,8 +37,14 @@ public class Nqueens extends AbstractProblem {
 	// Time
 	static long time = System.nanoTime();
 
+	/**
+	 * Point d'entrée
+	 * 
+	 * @param args
+	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		if (DEBUG >= 0)
+		if (DEBUG >= 0) {
 			try {
 				writer = new FileWriter(System.getProperty("user.dir") + "/out.csv");
 				writer.flush();
@@ -43,14 +52,20 @@ public class Nqueens extends AbstractProblem {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 		// En dessous de 4 le problème est impossible :(
 		for (n = 4; n <= nMax; n++) {
+			for (int i = 0; i < n; i++) {
+				gpX.add(i);
+				gpY.add(i + 1);
+			}
 			for (k = 1; k <= n; k++) {
 				for (t = 0; t < tMax; t++) {
-					if (DEBUG >= 0)
+					if (DEBUG >= 0) {
 						time = System.nanoTime();
-					if (DEBUG > 0)
-						System.out.println("<== n: " + n + " k: " + k + "==>");
+						if (DEBUG > 0)
+							System.out.println("<== n: " + n + " k: " + k + "==>");
+					}
 					Nqueens sol = new Nqueens();
 					sol.generate();
 					// Cette méthode héritée de AbstractProblem appelle les
@@ -61,25 +76,26 @@ public class Nqueens extends AbstractProblem {
 			}
 			System.out.println("Fini \\o/");
 		}
-		if (DEBUG >= 0)
+		if (DEBUG >= 0) {
 			try {
 				writer.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+		}
 	}
 
-	// Générateur maison qui place k reines sur les n.
+	/**
+	 * Générateur maison qui place k reines sur les n.
+	 * 
+	 * @return TRUE si il trouve une solution, FALSE sinon
+	 */
+	@SuppressWarnings("unused")
 	private boolean generate() {
 		int iTry = 0;
-		ArrayList<Integer> pX = new ArrayList<Integer>();
-		ArrayList<Integer> pY = new ArrayList<Integer>();
+		ArrayList<Integer> pX = new ArrayList<Integer>(gpX);
+		ArrayList<Integer> pY = new ArrayList<Integer>(gpY);
 		init = new int[n];
-		for (int i = 0; i < n; i++) {
-			// on créé une liste des X/Y
-			pX.add(i);
-			pY.add(i + 1);
-		}
 		Random rnd = new Random();
 		boolean chk, isValid;
 		int x, y, dx, dy, cpt, nb = 0;
@@ -129,17 +145,25 @@ public class Nqueens extends AbstractProblem {
 				}
 			}
 		}
-		if (DEBUG > 0)
+		if (DEBUG > 0) {
 			for (int i = 0; i < init.length; i++) {
 				for (int j = 0; j < init.length; j++)
 					System.out.print(init[j] - 1 == i ? "|Q" : "| ");
 				System.out.println("|");
 			}
-		System.out.println();
+			System.out.println();
+		}
 		return true;
 	}
 
-	private void writeVCS(boolean ok) throws IOException {
+	/**
+	 * Ecrit le résultat dans un CSV
+	 * 
+	 * @param ok
+	 *            Génération réussie?
+	 * @throws IOException
+	 */
+	private void writeCSV(boolean ok) throws IOException {
 		if (DEBUG >= 0) {
 			int kPlace = 0;
 			for (int i = 0; i < n; i++) {
@@ -179,6 +203,9 @@ public class Nqueens extends AbstractProblem {
 		solver.findSolution();
 	}
 
+	/**
+	 * Construit le problème en complétant la prégénération.
+	 */
 	@Override
 	public void buildModel() {
 		// Création du tableau contenant les références des variables du
@@ -186,10 +213,11 @@ public class Nqueens extends AbstractProblem {
 		vars = new IntVar[n];
 		// Création des variables ayant toutes pour domaine 1..n.
 		for (int i = 0; i < vars.length; i++) {
-			if (init[i] == 0)
+			if (init[i] == 0) {
 				vars[i] = VariableFactory.enumerated("Q_" + i, 1, n, solver);
-			else
+			} else {
 				vars[i] = VariableFactory.fixed("Q_" + i, init[i], solver);
+			}
 		}
 		// Ajout d’une contrainte imposant que les variables aient toutes des
 		// valeurs différentes.
@@ -206,23 +234,30 @@ public class Nqueens extends AbstractProblem {
 		}
 	}
 
+	/**
+	 * Sortie propre appelée après le solveur.
+	 */
 	@Override
+	@SuppressWarnings("unused")
 	public void prettyOut() {
-		if (DEBUG > 0 && solver.isFeasible().equals(ESat.TRUE)) {
-			for (int i = 0; i < vars.length; i++) {
-				for (int j = 0; j < vars.length; j++)
-					System.out.print(
-							solver.getSolutionRecorder().getLastSolution().getIntVal(vars[j]) - 1 == i ? "|Q" : "| ");
-				System.out.println("|");
-			}
-		} else {
-			System.out.println("Pas de solutions !");
-		}
-		if (DEBUG >= 0)
+		if (DEBUG >= 0) {
 			try {
-				writeVCS(solver.isFeasible().equals(ESat.TRUE));
+				writeCSV(solver.isFeasible().equals(ESat.TRUE));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			if (DEBUG > 0) {
+				if (solver.isFeasible().equals(ESat.TRUE)) {
+					for (int i = 0; i < vars.length; i++) {
+						for (int j = 0; j < vars.length; j++)
+							System.out.print(solver.getSolutionRecorder().getLastSolution().getIntVal(vars[j]) - 1 == i
+									? "|Q" : "| ");
+						System.out.println("|");
+					}
+				} else {
+					System.out.println("Pas de solutions !");
+				}
+			}
+		}
 	}
 }
