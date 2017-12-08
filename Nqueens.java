@@ -91,7 +91,7 @@ public class Nqueens extends AbstractProblem {
 			chk = true;
 			cpt = 1;
 			// check diag
-			while (chk && isValid) {
+			while (chk && isValid && nb > 0) {
 				chk = false;
 				for (int i = 0; i < 4; i++) {
 					dx = diag[i][0] * cpt;
