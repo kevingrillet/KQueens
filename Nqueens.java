@@ -48,7 +48,7 @@ public class Nqueens extends AbstractProblem {
 			try {
 				writer = new FileWriter(System.getProperty("user.dir") + "/out.csv");
 				writer.flush();
-				writer.append("n, k, kPlace, time, ok\n");
+				writer.append("n, k, kPlace, time, ok, maxDepth\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -163,16 +163,16 @@ public class Nqueens extends AbstractProblem {
 	 *            Génération réussie?
 	 * @throws IOException
 	 */
-	private void writeCSV(boolean ok) throws IOException {
+	private void writeCSV(boolean ok, long maxDepth) throws IOException {
 		if (DEBUG >= 0) {
 			int kPlace = 0;
 			for (int i = 0; i < n; i++) {
 				if (init[i] != 0)
 					kPlace++;
 			}
-			// writer.append("n, k, kPlace, time, ok\n");
-			writer.append(
-					n + "," + k + "," + kPlace + "," + (System.nanoTime() - time) + "," + (ok ? "1" : "0") + "\n");
+			// writer.append("n, k, kPlace, time, ok, maxDepth\n");
+			writer.append(n + "," + k + "," + kPlace + "," + (System.nanoTime() - time) + "," + (ok ? "1" : "0") + ","
+					+ maxDepth + "\n");
 		}
 	}
 
@@ -242,7 +242,7 @@ public class Nqueens extends AbstractProblem {
 	public void prettyOut() {
 		if (DEBUG >= 0) {
 			try {
-				writeCSV(solver.isFeasible().equals(ESat.TRUE));
+				writeCSV(solver.isFeasible().equals(ESat.TRUE), solver.getMeasures().getMaxDepth());
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
