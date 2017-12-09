@@ -48,18 +48,17 @@ public class Nqueens extends AbstractProblem {
 			try {
 				writer = new FileWriter(System.getProperty("user.dir") + "/out.csv");
 				writer.flush();
-				writer.append("n, k, kPlace, ns, ok, back\n");
+				writer.append("n, k, kPlace, ok, back, ns\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		// En dessous de 4 le problème est impossible :(
-		for (n = 4; n <= nMax; n++) {
+		for (n = 1; n <= nMax; n++) {
 			for (int i = 0; i < n; i++) {
 				gpX.add(i);
 				gpY.add(i + 1);
 			}
-			for (k = 1; k <= n; k++) {
+			for (k = 0; k <= n; k++) {
 				for (t = 0; t < tMax; t++) {
 					if (DEBUG >= 0) {
 						time = System.nanoTime();
@@ -170,9 +169,9 @@ public class Nqueens extends AbstractProblem {
 				if (init[i] != 0)
 					kPlace++;
 			}
-			// writer.append("n, k, kPlace, ns, ok, back\n");
-			writer.append(n + "," + k + "," + kPlace + "," + (System.nanoTime() - time) + "," + (ok ? "1" : "0") + ","
-					+ back + "\n");
+			// writer.append("n, k, kPlace, ok, back, ns\n");
+			writer.append(n + "," + k + "," + kPlace + "," + (ok ? "1" : "0") + "," + back + ","
+					+ (System.nanoTime() - time) + "\n");
 		}
 	}
 
