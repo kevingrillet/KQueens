@@ -17,12 +17,12 @@ public class Nqueens extends AbstractProblem {
 	static final int DEBUG = 0;
 	// Nombre de reines à trouver -> Taille de la grille.
 	static int n;
-	static int nMax = 100;
+	static int nMax = 80;
 	// Nombre de reines placées par le générateur.
 	static int k;
 	// Nombre de test
 	static int t;
-	static int tMax = 100;
+	static int tMax = 100; // pour les pourcentage :D
 	// Stockage de sortie du générateur
 	int[] init;
 	// Tableau de prégénération des coord X/Y
@@ -62,8 +62,7 @@ public class Nqueens extends AbstractProblem {
 				for (t = 0; t < tMax; t++) {
 					if (DEBUG >= 0) {
 						time = System.nanoTime();
-						if (DEBUG > 0)
-							System.out.println("<== n: " + n + " k: " + k + "==>");
+						System.out.println("> n:" + n + " k:" + k + " t:" + t);
 					}
 					Nqueens sol = new Nqueens();
 					sol.generate();
