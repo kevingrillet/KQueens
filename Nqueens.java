@@ -17,9 +17,11 @@ public class Nqueens extends AbstractProblem {
 	static final int DEBUG = 0;
 	// Nombre de reines à trouver -> Taille de la grille.
 	static int n;
-	static int nMax = 80;
+	static int nMin = 1; // 2, 3 n'ont pas de résultats
+	static int nMax = 30;
 	// Nombre de reines placées par le générateur.
 	static int k;
+	static int kMin = 1;
 	// Nombre de test
 	static int t;
 	static int tMax = 100; // pour les pourcentage :D
@@ -34,35 +36,33 @@ public class Nqueens extends AbstractProblem {
 	IntVar[] vars;
 	// Fichier sauvegarde
 	static FileWriter writer;
-	// Time
-	static long time = System.nanoTime();
 
 	/**
 	 * Point d'entrée
-	 * 
+	 *
 	 * @param args
 	 */
-	@SuppressWarnings("unused")
 	public static void main(String[] args) {
+		// Création du fichier de log, RAZ, ajout de l'entête
 		if (DEBUG >= 0) {
 			try {
 				writer = new FileWriter(System.getProperty("user.dir") + "/out.csv");
 				writer.flush();
-				writer.append("n, k, kPlace, ok, back, ns\n");
+				writer.append("n, k, kPlace, ok, back\n");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		for (n = 1; n <= nMax; n++) {
-			for (int i = 0; i < n; i++) {
+		for (n = nMin; n <= nMax; n++) {
+			// Initialisation les tableaux X/Y en ajoutant les manquants.
+			for (int i = gpX.size(); i < n; i++) {
 				gpX.add(i);
 				gpY.add(i + 1);
 			}
-			for (k = 0; k <= n; k++) {
+			for (k = kMin; k <= n; k++) {
 				for (t = 0; t < tMax; t++) {
 					if (DEBUG >= 0) {
-						time = System.nanoTime();
-						System.out.println("> n:" + n + " k:" + k + " t:" + t);
+						System.out.println("> " + " > n:" + n + " k:" + k);
 					}
 					Nqueens sol = new Nqueens();
 					sol.generate();
@@ -74,6 +74,7 @@ public class Nqueens extends AbstractProblem {
 			}
 			System.out.println("Fini \\o/");
 		}
+		// Fermeture du fichier de log
 		if (DEBUG >= 0) {
 			try {
 				writer.close();
@@ -85,15 +86,15 @@ public class Nqueens extends AbstractProblem {
 
 	/**
 	 * Générateur maison qui place k reines sur les n.
-	 * 
-	 * @return TRUE si il trouve une solution, FALSE sinon
 	 */
 	@SuppressWarnings("unused")
-	private boolean generate() {
+	private void generate() {
 		int iTry = 0;
+		// Recopie des X/Y possibles
 		ArrayList<Integer> pX = new ArrayList<Integer>(gpX);
 		ArrayList<Integer> pY = new ArrayList<Integer>(gpY);
 		init = new int[n];
+		// Création du Random
 		Random rnd = new Random();
 		boolean chk, isValid;
 		int x, y, dx, dy, cpt, nb = 0;
@@ -104,12 +105,14 @@ public class Nqueens extends AbstractProblem {
 			y = pY.get(rnd.nextInt(pY.size()));
 			chk = true;
 			cpt = 1;
-			// check diag
+			// Vérification des diagonales, temps qu'on a pas d'erreur
 			while (chk && isValid && nb > 0) {
 				chk = false;
+				// On boucle sur les 4 directions
 				for (int i = 0; i < 4; i++) {
 					dx = diag[i][0] * cpt;
 					dy = diag[i][1] * cpt;
+					// Vérification globale pour savoir si on est dans la grille
 					if (x + dx >= 0 && x + dx < n && y + dy > 0 && y + dy < n + 1) {
 						chk = true;
 						if (init[x + dx] == y + dy) {
@@ -133,16 +136,16 @@ public class Nqueens extends AbstractProblem {
 				if (DEBUG > 1)
 					System.out.println("----- KO ----- X:" + x + " Y:" + y);
 				// Si ca marche pas, on s'arrête, des fois ca marche juste pas
-				// TODO: Retour en arrière & regénération jusqu'à solution...
-				if (iTry > n * 100) {
+				if (iTry > n * 1000) {
 					if (DEBUG > 0)
 						System.out.println("<-- Pas de solution n: " + n + " k: " + k + " nb: " + nb + " -->");
-					return false;
+					return;
 				} else {
 					iTry++;
 				}
 			}
 		}
+		// Fonction prettyOut maison pour la génération
 		if (DEBUG > 0) {
 			for (int i = 0; i < init.length; i++) {
 				for (int j = 0; j < init.length; j++)
@@ -151,14 +154,15 @@ public class Nqueens extends AbstractProblem {
 			}
 			System.out.println();
 		}
-		return true;
 	}
 
 	/**
 	 * Ecrit le résultat dans un CSV
-	 * 
+	 *
 	 * @param ok
 	 *            Génération réussie?
+	 * @param back
+	 *            Nombre de backtrack
 	 * @throws IOException
 	 */
 	private void writeCSV(boolean ok, long back) throws IOException {
@@ -168,9 +172,7 @@ public class Nqueens extends AbstractProblem {
 				if (init[i] != 0)
 					kPlace++;
 			}
-			// writer.append("n, k, kPlace, ok, back, ns\n");
-			writer.append(n + "," + k + "," + kPlace + "," + (ok ? "1" : "0") + "," + back + ","
-					+ (System.nanoTime() - time) + "\n");
+			writer.append(n + "," + k + "," + kPlace + "," + (ok ? "1" : "0") + "," + back + "\n");
 		}
 	}
 
