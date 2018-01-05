@@ -27,7 +27,8 @@ DEBUT
     pX <- gpX; //Liste des X (0..n-1)
     pY <- gpY; //Liste des X (1..n)
     init <- new INTEGER[n];
-    iTry, x, y, dx, dy, nb <- 0;
+    iTry <- 0;
+    nb <- 0;
     TANT QUE (nb < k) FAIRE
         x <- Tirage random de pX;
         y <- Tirage random de pY;
