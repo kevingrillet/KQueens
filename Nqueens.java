@@ -89,15 +89,14 @@ public class Nqueens extends AbstractProblem {
 	 */
 	@SuppressWarnings("unused")
 	private void generate() {
-		int iTry = 0;
+		boolean chk, isValid;
+		int cpt, x, y, dx, dy, iTry = 0, nb = 0;
 		// Recopie des X/Y possibles
 		ArrayList<Integer> pX = new ArrayList<Integer>(gpX);
 		ArrayList<Integer> pY = new ArrayList<Integer>(gpY);
-		init = new int[n];
 		// Création du Random
 		Random rnd = new Random();
-		boolean chk, isValid;
-		int x, y, dx, dy, cpt, nb = 0;
+		init = new int[n];
 		while (nb < k) {
 			isValid = true;
 			// On tire au sort un X/Y pas encore utilisé
