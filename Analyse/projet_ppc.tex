@@ -8,9 +8,9 @@
             L'objectif est de réaliser une pré-génération, ce développement s'est découpé en deux phases, un développement de découverte et mise en place des fonctionnalités, puis une refonte du code pour optimiser l'algorithme.
 
             \subsection{Phase 1 - Mise en place des fonctionnalités}
-                Dans un premier temps, implémentation d'un tirage au hasard \verb?k? fois en vérifiant simplement si la case n'était pas déjà utilisée. Suite à cela ajout de la vérification des diagonales.
+                Dans un premier temps, implémentation d'un tirage au hasard \verb?k? fois en vérifiant simplement si la case n'était pas déjà utilisée. Suite à cela, ajout de la vérification des diagonales.
 
-                Afin d'éviter que l'algorithme tourne indéfiniment ajout d'une limite du nombre de tentative avant que le générateur de s'arrête.
+                Afin d'éviter que l'algorithme tourne indéfiniment, ajout d'une limite du nombre de tentative avant que le générateur ne s'arrête.
 
                 \begin{description}
                     \item Répétition jusqu'à ce que \verb?k? soit atteint:
@@ -20,7 +20,7 @@
                         \item Si pas de problème lors de la vérification des diagonales:
                         \begin{description}
                             \item Enregistrement de \verb?X? et \verb?Y? dans \verb?init?.
-                            \item Remise a zero du nombre de tentatives.
+                            \item Remise à zéro du nombre de tentatives.
                         \end{description}
                         \item Sinon:
                         \begin{description}
@@ -34,7 +34,7 @@
                 \end{description}
 
             \subsection{Phase 2 - Optimisation}
-                Dans un second temps, ajout des listes contenant les lignes et colonnes n'ayant pas encore de reines et ainsi éviter une grosse redondance dans le tirage de la reine à placer. Changement de la vérification des diagonales pour rendre le tout plus compacte et s'arrêtant plus rapidement en cas de conflit.
+                Dans un second temps, ajout des listes contenant les lignes et colonnes n'ayant pas encore de reines et ainsi éviter une grosse redondance dans le tirage de la reine à placer. Changement de la vérification des diagonales pour rendre le tout plus compact et s'arrêtant plus rapidement en cas de conflit.
 
                 Ces modifications ont permis d'améliorer les performances sans toucher au nombre de tentatives avant l'arrêt du générateur.
 
@@ -48,7 +48,7 @@
     					\begin{description}
     						\item Enregistrement de \verb?X? et \verb?Y? dans \verb?init?.
     						\item Suppression de \verb?X? et \verb?Y? dans \verb?pX? et \verb?pY?.
-                            \item Remise a zero du nombre de tentatives.
+                            \item Remise à zéro du nombre de tentatives.
     					\end{description}
                         \item Sinon:
                         \begin{description}
@@ -129,11 +129,11 @@ FIN
 		\section{Résultats expérimentaux}
 			\begin{center} \includegraphics[width=\textwidth]{realK30.png} \end{center}
 
-            On peut voir que l'algorithme, pour $N=30$ arrive à placer toutes les reines jusqu'à $K=N-4$, entre $K=N-4$ et $K=N-3$ il manque $1$ reine. Plus $K$ tend vers $N$, plus le placement d'une reine au hasard est difficile. Plus $N$ est grand, plus le problème apparait tôt.
+            On peut voir que l'algorithme, pour $N=30$, arrive à placer toutes les reines jusqu'à $K=N-4$, entre $K=N-4$ et $K=N-3$ il manque $1$ reine. Plus $K$ tend vers $N$, plus le placement d'une reine au hasard est difficile. Plus $N$ est grand, plus le problème apparait tôt.
 
 			\begin{center} \includegraphics[width=\textwidth]{result30.png} \end{center}
 
-            Le solveur arrive, pour $N=30$, à trouver des solutions pour $K<N/2$ et en trouve un certain nombre pour $2N/3<K<N/2$. Plus N est grand, plus le solveur arrouve a trouver des solutions pour un K grand.
+            Le solveur arrive, pour $N=30$, à trouver des solutions pour $K<N/2$ et en trouve un certain nombre pour $2N/3<K<N/2$. Plus N est grand, plus le solveur arrouve à trouver des solutions pour un K grand.
 
 			\begin{center} \includegraphics[width=\textwidth]{backtrack30.png} \end{center}
 
