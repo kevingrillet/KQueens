@@ -1,0 +1,98 @@
+\NeedsTeXFormat{LaTeX2e}[1999/01/01]
+\ProvidesPackage{style}[2012/11/17]
+
+% PACKAGES
+	\RequirePackage{etex}
+	\RequirePackage[utf8]{inputenc}
+	\RequirePackage[francais]{babel}
+	\RequirePackage[T1]{fontenc}
+	\RequirePackage{amsmath,amssymb,amsfonts}
+	\RequirePackage{mathrsfs,mathtools}
+	\RequirePackage{fancyhdr,fancybox,fancyvrb}
+	\RequirePackage{hyperref,titlesec,titletoc}
+	\RequirePackage{pstricks, pst-plot}
+	\RequirePackage{tikz, circuitikz}
+	\RequirePackage{ulem}
+	\RequirePackage{eurosym}
+	\RequirePackage{listings, color}
+	\RequirePackage{float,subcaption}
+	\RequirePackage{bbding}
+
+% Mise en page
+	\usepackage[a4paper, twoside, top=2cm, bottom=2cm, left=1.5cm, right=1.5cm]{geometry}
+
+% Page de garde + sommaire
+	\usetikzlibrary{shapes.geometric,decorations,decorations.pathmorphing}
+	\newcommand{\debut}[3]{
+		\newcommand{\titre}{#2}
+		\newcommand{\auteur}{#3}
+		\thispagestyle{empty}
+		\vspace*{2cm}
+			\begin{center}
+			\textbf{\textsc{\Huge{\begin{tikzpicture}\node [fill=gray!10,draw,thick, minimum height=2cm, minimum width=3cm, decorate, decoration={random steps,segment length=3pt,amplitude=1pt}]{\titre};\end{tikzpicture}}}}
+				\\[3cm]\large{\textsc{\auteur}}
+				\\[-5pt] \rule{15cm}{1pt}
+				\\[5pt] \textsc{Université de Bourgogne - Master Informatique 2\up{ème} Année BDIA}
+				\\ \vfill
+				\begin{center} \includegraphics[scale=.25]{logoUB.jpg} \end{center}
+				\footnotesize{Rédigé en \LaTeX\ par \textsc{\href{http://kevingrillet.fr}{Kévin GRILLET}}}
+			\end{center}
+		\newpage
+		\renewcommand{\contentsname}{\thispagestyle{empty}\centerline{\textsc{Sommaire}}}
+		\setcounter{tocdepth}{#1}
+		%\tableofcontents\newpage
+	}
+
+% Header & Footer
+	\setlength{\headheight}{15pt}
+	\pagestyle{fancy}
+	\fancyhf{}
+	\renewcommand\headrulewidth{.5pt}
+	\renewcommand\footrulewidth{.5pt}
+	\fancyhead[RE,LO]{\textsc{\titre}}
+	\fancyhead[LE,RO]{\textsc{\auteur}}
+	\fancyfoot[LE,RO]{\footnotesize{Rédigé en \LaTeX\ par \textsc{\href{http://kevingrillet.fr}{Kévin GRILLET}}}}
+	\fancyfoot[RE,LO]{\thepage}
+
+% Color
+	\definecolor{mygreen}{rgb}{0,0.6,0}
+	\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+	\definecolor{mymauve}{rgb}{0.58,0,0.82}
+	\definecolor{darkyellow}{RGB}{204,204,0}
+
+% Listings
+	\lstset{ %
+		backgroundcolor=\color{white},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+		basicstyle=\footnotesize,        % the size of the fonts that are used for the code
+		breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+		breaklines=true,                 % sets automatic line breaking
+		captionpos=b,                    % sets the caption-position to bottom
+		commentstyle=\color{mygreen},    % comment style
+		deletekeywords={...},            % if you want to delete keywords from the given language
+		escapeinside={\%*}{*)},          % if you want to add LaTeX within your code
+		extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+		frame=single,	                 % adds a frame around the code
+		keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+		keywordstyle=\color{blue},       % keyword style
+		language=Algol,                    % the language of the code
+			% ABAP, ACSL, Ada, Algol, Ant, Assembler, Awk, bash, Basic, C#, C++, C, Caml,
+			% Clean, Cobol, Comal, csh, Delphi, Eiffel, Elan, erlang, Euphoria, Fortran,
+			% GCL, Gnuplot, Haskell, HTML, IDL, inform, Java, JVMIS, ksh, Lisp, Logo, Lua,
+			% make, Mathematica, Matlab, Mercury, MetaPost, Miranda, Mizar, ML, Modelica,
+			% Modula-2, MuPAD, NASTRAN, Oberon-2, Objective C , OCL, Octave, Oz, Pascal,
+			% Perl, PHP, PL/I, Plasm, POV, Prolog, Promela, Python, R, Reduce, Rexx, RSL,
+			% Ruby, S, SAS, Scilab, sh, SHELXL, Simula, SQL, tcl, TeX, VBScript, Verilog,
+			% VHDL, VRML, XML, XSLT
+		otherkeywords={*,...},           % if you want to add more keywords to the set
+		numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+		numbersep=5pt,                   % how far the line-numbers are from the code
+		numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+		rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+		showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+		showstringspaces=false,          % underline spaces within strings only
+		showtabs=false,                  % show tabs within strings adding particular underscores
+		stepnumber=1,                    % the step between two line-numbers. If it's 1, each line will be numbered
+		stringstyle=\color{mymauve},     % string literal style
+		tabsize=2,	                     % sets default tabsize to 2 spaces
+		title=\lstname                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+	}
